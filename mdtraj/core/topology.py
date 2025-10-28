@@ -1820,8 +1820,17 @@ class Atom:
         return True
 
     def __hash__(self) -> int:
-        """A quick comparison."""
-        return self.index
+        """Hash method matches __eq__ fields."""
+
+        return hash((
+            self.name,
+            self.index,
+            self.formal_charge,
+            self.element.name,
+            self.residue.name,
+            self.residue.index,
+            self.residue.chain.index,
+        ))
 
     def __str__(self) -> str:
         return f"{self.residue}-{self.name}"
@@ -1987,7 +1996,7 @@ class Bond(namedtuple("Bond", ["atom1", "atom2"])):
 
     def __hash__(self) -> int:
         # Set of atoms making up bonds, the type, and the order
-        return hash((self[0], self[1], self.type, self.order))
+        return hash(self._equality_tuple)
 
     @staticmethod
     def _other_is_bond(other):
